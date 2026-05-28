@@ -73,7 +73,7 @@ const missions = computed(() => (tm('about.missions') as any[]).map((m: any) => 
                 class="mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full transition-transform duration-300 group-hover:scale-110"
                 style="background: linear-gradient(135deg, var(--color-brand-100), var(--color-brand-50));"
               >
-                <NuxtImg src="/logo-blue.webp" alt="icon" class="h-4 w-4 object-contain" />
+                <NuxtImg src="/logo-blue.webp" alt="" class="h-4 w-4 object-contain" />
               </div>
               <span class="font-body text-base leading-relaxed text-ink-700">{{ mission }}</span>
             </li>

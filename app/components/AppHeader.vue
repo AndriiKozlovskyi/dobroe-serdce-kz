@@ -288,7 +288,7 @@ function scrollToSection(href: string) {
   --dur: 650ms;
   background-color: rgb(255, 255, 255);
   --s: 0;
-  position: fixed;
+  position: sticky;
   inset: 0 0 auto;
   z-index: 50;
 }

@@ -94,7 +94,7 @@ const documents = computed(() => (tm('documents.items') as any[]).map((d: any) =
                 <div class="flex h-7 w-7 flex-shrink-0 items-center justify-center">
                   <NuxtImg
                     src="/logo-blue.webp"
-                    alt="icon"
+                    alt=""
                     class="h-6 w-6 object-contain transition-transform duration-200 group-hover:scale-110"
                   />
                 </div>

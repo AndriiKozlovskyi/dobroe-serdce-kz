@@ -28,25 +28,33 @@ export default defineNuxtConfig({
 
   i18n: {
     locales: [
-      { code: 'ru', language: 'ru-RU', name: 'Русский', file: 'ru.ts' },
       { code: 'kz', language: 'kk-KZ', name: 'Қазақша', file: 'kz.ts' },
+      { code: 'ru', language: 'ru-RU', name: 'Русский', file: 'ru.ts' },
     ],
-    defaultLocale: 'ru',
-    strategy: 'no_prefix',
+    defaultLocale: 'kz',
+    strategy: 'prefix_except_default',
     langDir: 'locales',
     lazy: true,
+    baseUrl: 'https://dobroe-serdce.kz',
   },
 
   app: {
     head: {
-      htmlAttrs: { lang: 'ru' },
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         { name: 'theme-color', content: '#0063B5' },
+        { name: 'robots', content: 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1' },
+        { name: 'geo.region', content: 'KZ-71' },
+        { name: 'geo.placename', content: 'Астана' },
+        { name: 'geo.position', content: '51.1801;71.4460' },
+        { name: 'ICBM', content: '51.1801, 71.4460' },
       ],
       link: [
         { rel: 'icon', type: 'image/png', href: '/logo.png' },
+        { rel: 'alternate', hreflang: 'ru', href: 'https://dobroe-serdce.kz/ru' },
+        { rel: 'alternate', hreflang: 'kk', href: 'https://dobroe-serdce.kz/' },
+        { rel: 'alternate', hreflang: 'x-default', href: 'https://dobroe-serdce.kz/' },
       ],
     },
   },

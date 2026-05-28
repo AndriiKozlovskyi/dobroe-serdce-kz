@@ -107,7 +107,7 @@ const stepsView = computed(() => {
           <ol class="mb-10 space-y-5">
             <li v-for="step in stepsView" :key="step.n" class="group flex items-center gap-4">
               <div class="flex h-9 w-9 flex-shrink-0 items-center justify-center">
-                <NuxtImg src="/logo-blue.webp" alt="icon" class="h-7 w-7 object-contain transition-transform duration-300 group-hover:scale-110" />
+                <NuxtImg src="/logo-blue.webp" alt="" class="h-7 w-7 object-contain transition-transform duration-300 group-hover:scale-110" />
               </div>
               <p class="font-body text-base font-medium text-ink-700 text-left max-w-[calc(100%-4rem)]">{{ step.text }}</p>
               <div class="h-px flex-1 bg-ivory-200 transition-all duration-300 group-hover:bg-brand-100 hidden sm:block" />
