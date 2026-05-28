@@ -9,6 +9,7 @@ onMounted(() => {
 
 <template>
   <div>
+    <AppSplash />
     <NuxtRouteAnnouncer />
     <NuxtPage />
     <a
