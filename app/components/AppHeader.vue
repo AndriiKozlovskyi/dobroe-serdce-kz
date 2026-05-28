@@ -291,7 +291,7 @@ onUnmounted(() => document.removeEventListener('click', handleOutsideClick))
   padding: 0.32rem 0.55rem 0.32rem 0.65rem;
   border-radius: 9999px;
   border: 1px solid rgba(255,255,255,0.28);
-  background: rgba(12, 28, 83, 0.8);
+  background: var(--color-sapphire-700, #0063b5);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   font-family: var(--font-family-body, system-ui, sans-serif);
