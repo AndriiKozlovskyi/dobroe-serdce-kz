@@ -1,0 +1,33 @@
+# Nuxt
+.nuxt/
+.output/
+.data/
+.nitro/
+.cache/
+
+# Node
+node_modules/
+
+# Build
+dist/
+
+# Env
+.env
+.env.*
+!.env.example
+
+# Logs
+logs/
+*.log
+
+# Editor
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# OS
+.DS_Store
+Thumbs.db
