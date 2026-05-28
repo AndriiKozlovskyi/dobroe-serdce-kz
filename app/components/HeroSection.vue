@@ -16,20 +16,28 @@ function scrollTo(id: string) {
 
 <template>
   <section
-    class="hero-section min-stable-screen relative flex items-center overflow-hidden bg-section-dark"
+    class="hero-section  relative flex items-center overflow-hidden bg-section-dark"
     :aria-label="t('hero.aria')"
   >
-    <div class="absolute inset-0 bg-[#1a3a5c]/80" />
+    <NuxtImg
+      src="/about/care.webp"
+      alt=""
+      class="absolute inset-0 h-full w-full object-cover"
+      :modifiers="{ q: 80 }"
+      fetchpriority="high"
+      loading="eager"
+    />
+    <div class="absolute inset-0 bg-yellow-200/30" />
     <div
       class="absolute inset-0"
       style="background: radial-gradient(ellipse at 30% 60%, rgba(0,99,181,0.25) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(249,189,21,0.08) 0%, transparent 50%);"
     />
 
-    <div class="hero-content relative z-10 mx-auto mt-10 w-full max-w-7xl px-6 py-20 lg:px-8 lg:py-28 xl:px-16">
+    <div class="hero-content relative z-10 mx-auto w-full py-20 max-w-7xl px-6 lg:px-8 xl:px-16">
       <div class="hero-copy lg:max-w-3xl">
         <h1
           class="hero-title animate-fade-up font-display w-full text-center leading-none tracking-tight text-white lg:text-left"
-          style="font-size: clamp(1.95rem, 8.2vw, 5.5rem); font-weight: 700; line-height: 1.05; will-change: transform; animation-delay: 0s;"
+          style="font-size: clamp(1.95rem, 6vw, 4rem); font-weight: 700; line-height: 1.05; will-change: transform; animation-delay: 0s;"
         >
           {{ t('hero.titleBlue') }}<br />
           <span>{{ t('hero.titleGold') }}</span>
@@ -119,7 +127,7 @@ function scrollTo(id: string) {
 
 @media (max-width: 767px) {
   .hero-section { align-items: flex-start; }
-  .hero-content { padding-top: 7.5rem; padding-bottom: 3.5rem; padding-left: 1rem; padding-right: 1rem; }
+  .hero-content { padding-top: 5.5rem; padding-bottom: 3.5rem; padding-left: 1rem; padding-right: 1rem; }
   .hero-copy { max-width: none; }
   .hero-title { font-size: clamp(1.55rem, 7.5vw, 2.65rem) !important; line-height: 1.08 !important; text-wrap: balance; }
   .hero-divider { margin-top: 1.25rem; margin-bottom: 1.5rem; margin-left: auto; margin-right: auto; width: 5rem; }

@@ -2,7 +2,6 @@
 const { isScrolled } = useScrolled(24)
 const { lang, setLang } = useLocale()
 const isMobileMenuOpen = ref(false)
-const isLangDropdownOpen = ref(false)
 const activeItem = ref<string | null>(null)
 
 const ui = computed(() => {
@@ -56,24 +55,7 @@ function scrollToSection(href: string) {
 
     <nav class="ds-header__nav" :aria-label="ui.navAria">
       <div class="ds-logo__img-wrap" style="position: relative; display: inline-block">
-        <div
-          style="
-            position: absolute;
-            top: -5.5px;
-            left: 41%;
-            transform: translateX(-50%);
-            font-family: var(--font-family-body, system-ui, sans-serif);
-            font-size: 0.7rem;
-            font-weight: 700;
-            letter-spacing: 0.18em;
-            text-transform: uppercase;
-            color: var(--color-brand-500);
-            white-space: nowrap;
-            pointer-events: none;
-          "
-        >
-          Астана
-        </div>
+
         <NuxtImg src="/dobroe_serdce.webp" alt="Логотип Доброе сердце" class="ds-logo__img" />
       </div>
 
@@ -90,7 +72,7 @@ function scrollToSection(href: string) {
         </li>
       </ul>
 
-      <div class="flex gap-6">
+      <div class="flex items-center gap-2 sm:gap-4 lg:gap-6">
         <div class="hidden items-center gap-4 lg:flex">
           <a
             href="https://instagram.com/pansionat_dobroe_serdce"
@@ -137,48 +119,6 @@ function scrollToSection(href: string) {
           </button>
         </div>
 
-        <div class="relative flex md:hidden">
-          <button
-            class="border-sapphire-700 bg-sapphire-700 rounded-full border px-3 py-1 text-xs font-semibold tracking-wider text-white transition-colors"
-            @click="isLangDropdownOpen = !isLangDropdownOpen"
-          >
-            {{ lang === 'ru' ? 'RU' : 'KZ' }}
-            <svg
-              class="ml-1 inline-block h-3 w-3 transition-transform"
-              :class="{ 'rotate-180': isLangDropdownOpen }"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path d="M7 10l5 5 5-5z" />
-            </svg>
-          </button>
-          <Transition
-            enter-active-class="transition-all duration-200"
-            leave-active-class="transition-all duration-200"
-            enter-from-class="opacity-0 scale-95"
-            leave-to-class="opacity-0 scale-95"
-          >
-            <div
-              v-if="isLangDropdownOpen"
-              class="absolute right-0 top-full mt-2 rounded-lg border border-sapphire-700 bg-white shadow-lg"
-            >
-              <button
-                class="block w-full px-4 py-2 text-left text-xs font-semibold tracking-wider transition-colors hover:bg-sapphire-50"
-                :class="lang === 'ru' ? 'text-sapphire-700 bg-sapphire-50' : 'text-ink-800'"
-                @click="setLang('ru'); isLangDropdownOpen = false"
-              >
-                Русский (RU)
-              </button>
-              <button
-                class="block w-full px-4 py-2 text-left text-xs font-semibold tracking-wider transition-colors hover:bg-sapphire-50"
-                :class="lang === 'kz' ? 'text-sapphire-700 bg-sapphire-50' : 'text-ink-800'"
-                @click="setLang('kz'); isLangDropdownOpen = false"
-              >
-                Қазақша (KZ)
-              </button>
-            </div>
-          </Transition>
-        </div>
 
         <a href="tel:+380961462910" class="ds-cta" :aria-label="ui.callAria">
           <span class="ds-cta__icon" aria-hidden="true">
@@ -327,7 +267,9 @@ function scrollToSection(href: string) {
 }
 
 .ds-logo__img-wrap { position: relative; flex-shrink: 0; }
-.ds-logo__img { height: 38px; width: auto; object-fit: contain; }
+.ds-logo__img { height: 26px; width: auto; object-fit: contain; }
+@media (min-width: 640px) { .ds-logo__img { height: 32px; } }
+@media (min-width: 1024px) { .ds-logo__img { height: 38px; } }
 
 .ds-nav__list {
   display: none;
