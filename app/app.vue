@@ -10,6 +10,7 @@ onMounted(() => {
 <template>
   <div>
     <AppSplash />
+    <AppPageLoader />
     <NuxtRouteAnnouncer />
     <NuxtPage />
     <a
