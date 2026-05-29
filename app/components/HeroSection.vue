@@ -150,7 +150,7 @@ function scrollTo(id: string) {
           >
             <Icon
               name="skill-icons:instagram"
-              class="relative z-10 h-20 w-8 text-white/70 transition-all duration-300 group-hover:text-white"
+              class="relative z-10 h-14 w-14 text-white/70 transition-all duration-300 group-hover:text-white"
             />
           </a>
           <a
@@ -162,7 +162,7 @@ function scrollTo(id: string) {
           >
             <Icon
               name="logos:telegram"
-              class="relative z-10 h-8 w-8 text-white/70 transition-all duration-300 group-hover:text-white"
+              class="relative z-10 h-14 w-14 text-white/70 transition-all duration-300 group-hover:text-white"
             />
           </a>
           <a
@@ -174,7 +174,7 @@ function scrollTo(id: string) {
           >
             <Icon
               name="logos:whatsapp-icon"
-              class="relative z-10 h-8 w-8 text-white/70 transition-all duration-300 group-hover:text-white"
+              class="relative z-10 h-14 w-14 text-white/70 transition-all duration-300 group-hover:text-white"
             />
           </a>
         </div>
@@ -301,6 +301,8 @@ function scrollTo(id: string) {
   }
 }
 </style>
+
+
 
 
 

@@ -1,4 +1,4 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 const reviewsHref = 'https://2gis.kz/astana/firm/70000001059285683/tab/reviews'
 
 const reviewCards = [
@@ -107,7 +107,7 @@ const reviewCards = [
         aria-label="Instagram"
         class="group relative inline-flex items-center justify-center rounded-full transition-all duration-300 hover:-translate-y-1 hover:scale-110"
       >
-        <Icon name="skill-icons:instagram" class="relative z-10 h-8 w-8 text-white/70 transition-all duration-300 group-hover:text-white" />
+        <Icon name="skill-icons:instagram" class="relative z-10 h-14 w-14 text-white/70 transition-all duration-300 group-hover:text-white" />
       </a>
       <a
         href="https://t.me/pansionat_dobroe_serdce"
@@ -116,7 +116,7 @@ const reviewCards = [
         aria-label="Telegram"
         class="group relative inline-flex items-center justify-center rounded-full transition-all duration-300 hover:-translate-y-1 hover:scale-110"
       >
-        <Icon name="logos:telegram" class="relative z-10 h-8 w-8 text-white/70 transition-all duration-300 group-hover:text-white" />
+        <Icon name="logos:telegram" class="relative z-10 h-14 w-14 text-white/70 transition-all duration-300 group-hover:text-white" />
       </a>
       <a
         href="https://wa.me/380961462910"
@@ -125,7 +125,7 @@ const reviewCards = [
         aria-label="WhatsApp"
         class="group relative inline-flex items-center justify-center rounded-full transition-all duration-300 hover:-translate-y-1 hover:scale-110"
       >
-        <Icon name="logos:whatsapp-icon" class="relative z-10 h-8 w-8 text-white/70 transition-all duration-300 group-hover:text-white" />
+        <Icon name="logos:whatsapp-icon" class="relative z-10 h-14 w-14 text-white/70 transition-all duration-300 group-hover:text-white" />
       </a>
     </div>
   </section>
@@ -325,3 +325,5 @@ const reviewCards = [
   }
 }
 </style>
+
+

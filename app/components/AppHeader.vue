@@ -90,11 +90,11 @@ onUnmounted(() => document.removeEventListener('click', handleOutsideClick))
         <div class="hidden items-center gap-4 lg:flex">
           <a href="https://instagram.com/pansionat_dobroe_serdce" target="_blank" rel="noopener noreferrer" aria-label="Instagram"
             class="group flex items-center justify-center transition-all duration-300 hover:-translate-y-1 hover:scale-110">
-            <Icon name="skill-icons:instagram" class="h-[28px] w-[28px] text-white/70 transition-colors group-hover:text-white" />
+            <Icon name="skill-icons:instagram" class="h-14 w-14 text-white/70 transition-colors group-hover:text-white" />
           </a>
           <a href="https://wa.me/380961462910" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"
             class="group flex items-center justify-center transition-all duration-300 hover:-translate-y-1 hover:scale-110">
-            <Icon name="logos:whatsapp-icon" class="h-[28px] w-[28px] text-white/70 transition-colors group-hover:text-white" />
+            <Icon name="logos:whatsapp-icon" class="h-14 w-14 text-white/70 transition-colors group-hover:text-white" />
           </a>
         </div>
 
@@ -196,15 +196,15 @@ onUnmounted(() => document.removeEventListener('click', handleOutsideClick))
         <div class="flex items-center justify-center gap-6 pt-4">
           <a href="https://instagram.com/pansionat_dobroe_serdce" target="_blank" rel="noopener noreferrer" aria-label="Instagram"
             class="group flex items-center justify-center rounded-full transition-all duration-300 hover:-translate-y-1 hover:scale-110">
-            <Icon name="skill-icons:instagram" class="h-[28px] w-[28px] transition-all group-hover:scale-110" />
+            <Icon name="skill-icons:instagram" class="h-14 w-14 transition-all group-hover:scale-110" />
           </a>
           <a href="https://t.me/pansionat_dobroe_serdce" target="_blank" rel="noopener noreferrer" aria-label="Telegram"
             class="group inline-flex items-center justify-center rounded-full transition-all duration-300 hover:-translate-y-1 hover:scale-110">
-            <Icon name="logos:telegram" class="h-7 w-7 text-ink-600 transition-all group-hover:text-sapphire-700" />
+            <Icon name="logos:telegram" class="h-14 w-14 text-ink-600 transition-all group-hover:text-sapphire-700" />
           </a>
           <a href="https://wa.me/380961462910" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"
             class="group flex items-center justify-center rounded-full transition-all duration-300 hover:-translate-y-1 hover:scale-110">
-            <Icon name="logos:whatsapp-icon" class="h-[28px] w-[28px] transition-all group-hover:scale-110" />
+            <Icon name="logos:whatsapp-icon" class="h-14 w-14 transition-all group-hover:scale-110" />
           </a>
         </div>
       </div>
@@ -450,3 +450,5 @@ onUnmounted(() => document.removeEventListener('click', handleOutsideClick))
 .ds-drawer-enter-from, .ds-drawer-leave-to { opacity: 0; transform: translateY(-8px); }
 .ds-drawer-enter-to, .ds-drawer-leave-from { opacity: 1; transform: translateY(0); }
 </style>
+
+
