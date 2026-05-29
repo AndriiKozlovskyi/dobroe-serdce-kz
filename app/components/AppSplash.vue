@@ -3,7 +3,6 @@ const visible = ref(true)
 const started = ref(false)
 
 onMounted(() => {
-  // Tiny delay lets the enter transition finish before spin begins
   requestAnimationFrame(() => {
     requestAnimationFrame(() => { started.value = true })
   })
@@ -17,16 +16,18 @@ function onSpinDone() {
 <template>
   <Transition name="splash">
     <div v-if="visible" class="splash" aria-hidden="true">
-      <div class="splash__bg" />
-      <div class="splash__overlay" />
       <div class="splash__body">
-        <img
-          src="/logo.webp"
-          alt=""
-          class="splash__logo"
-          :class="{ 'splash__logo--spin': started }"
-          @animationend="onSpinDone"
-        />
+        <div class="splash__ring">
+          <div class="splash__track-outer" />
+          <div class="splash__track-inner" />
+          <img
+            src="/logo.webp"
+            alt=""
+            class="splash__logo"
+            :class="{ 'splash__logo--spin': started }"
+            @animationend="onSpinDone"
+          />
+        </div>
       </div>
     </div>
   </Transition>
@@ -40,43 +41,108 @@ function onSpinDone() {
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  background: #ffffff;
 }
 
-.splash__bg {
-  position: absolute;
-  inset: -5%;
-  background: url('/about/care.webp') center / cover no-repeat;
-  filter: blur(22px);
-  transform: scale(1.08);
-}
-
-.splash__overlay {
+/* Subtle radial glow on the otherwise flat white */
+.splash::before {
+  content: '';
   position: absolute;
   inset: 0;
-  background: rgba(2, 12, 34, 0.58);
+  background: radial-gradient(
+    ellipse 60% 60% at 50% 50%,
+    rgba(0, 99, 181, 0.05) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
 }
 
+/* ── Body appear animation ────────────────────── */
 .splash__body {
   position: relative;
   z-index: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: bodyIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: bodyIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 @keyframes bodyIn {
-  from { opacity: 0; transform: scale(0.88); }
+  from { opacity: 0; transform: scale(0.82); }
   to   { opacity: 1; transform: scale(1); }
 }
 
+/* ── Ring container ───────────────────────────── */
+.splash__ring {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Static track circles ─────────────────────── */
+.splash__track-outer,
+.splash__track-inner {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.splash__track-outer {
+  inset: -20px;
+  border: 1.5px solid rgba(0, 99, 181, 0.07);
+}
+.splash__track-inner {
+  inset: -7px;
+  border: 1.5px solid rgba(249, 189, 21, 0.11);
+}
+
+/* ── Outer arc — sapphire, clockwise ──────────── */
+.splash__ring::before {
+  content: '';
+  position: absolute;
+  inset: -20px;
+  border-radius: 50%;
+  background: conic-gradient(
+    transparent             0%,
+    transparent            48%,
+    rgba(0, 99, 181, 0.10) 64%,
+    rgba(0, 99, 181, 0.55) 82%,
+    rgba(0, 99, 181, 1)   100%
+  );
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #fff calc(100% - 2.5px));
+  mask:         radial-gradient(farthest-side, transparent calc(100% - 2.5px), #fff calc(100% - 2.5px));
+  animation: arcCW 1.4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* ── Inner arc — gold, counter-clockwise ─────── */
+.splash__ring::after {
+  content: '';
+  position: absolute;
+  inset: -7px;
+  border-radius: 50%;
+  background: conic-gradient(
+    transparent              0%,
+    transparent             50%,
+    rgba(249, 189, 21, 0.10) 67%,
+    rgba(249, 189, 21, 0.55) 84%,
+    rgba(249, 189, 21, 1)   100%
+  );
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #fff calc(100% - 2px));
+  mask:         radial-gradient(farthest-side, transparent calc(100% - 2px), #fff calc(100% - 2px));
+  animation: arcCCW 0.9s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* ── Logo ─────────────────────────────────────── */
 .splash__logo {
-  width: 110px;
-  height: 110px;
+  position: relative;
+  z-index: 1;
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
   transform: rotate(180deg);
   opacity: 0;
-  object-fit: contain;
-  filter: drop-shadow(0 6px 28px rgba(0, 0, 0, 0.45));
+  filter: drop-shadow(0 3px 12px rgba(0, 99, 181, 0.15));
   transform-origin: center center;
 }
 
@@ -85,11 +151,15 @@ function onSpinDone() {
 }
 
 @keyframes halfSpin {
-  from  { transform: rotate(180deg); opacity: 0; }
-  35%   { opacity: 1; }
-  to    { transform: rotate(0deg); opacity: 1; }
+  from { transform: rotate(180deg); opacity: 0; }
+  35%  { opacity: 1; }
+  to   { transform: rotate(0deg);   opacity: 1; }
 }
 
+@keyframes arcCW  { to { transform: rotate(360deg);  } }
+@keyframes arcCCW { to { transform: rotate(-360deg); } }
+
+/* ── Splash transition ────────────────────────── */
 .splash-enter-active { transition: opacity 0.3s ease; }
 .splash-leave-active { transition: opacity 0.5s ease; }
 .splash-enter-from, .splash-leave-to { opacity: 0; }

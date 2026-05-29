@@ -27,10 +27,10 @@ onUnmounted(() => {
 <template>
   <Transition name="page-loader">
     <div v-if="loading" class="page-loader" aria-hidden="true">
-      <div class="page-loader__bg" />
-      <div class="page-loader__overlay" />
       <div class="page-loader__body">
         <div class="page-loader__ring">
+          <div class="page-loader__track-outer" />
+          <div class="page-loader__track-inner" />
           <img src="/logo.webp" alt="" class="page-loader__logo" />
         </div>
       </div>
@@ -46,63 +46,113 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  background: #ffffff;
 }
 
-.page-loader__bg {
-  position: absolute;
-  inset: -5%;
-  background: url('/about/care.webp') center / cover no-repeat;
-  filter: blur(22px);
-  transform: scale(1.08);
-}
-
-.page-loader__overlay {
+/* Barely-there radial glow so the center doesn't feel flat */
+.page-loader::before {
+  content: '';
   position: absolute;
   inset: 0;
-  background: rgba(2, 12, 34, 0.68);
+  background: radial-gradient(
+    ellipse 55% 55% at 50% 50%,
+    rgba(0, 99, 181, 0.04) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
 }
 
 .page-loader__body {
   position: relative;
   z-index: 1;
   display: flex;
-  flex-direction: column;
   align-items: center;
+  justify-content: center;
 }
 
-/* Spinning ring around logo */
+/* ── Ring container ───────────────────────────── */
 .page-loader__ring {
   position: relative;
-  width: 88px;
-  height: 88px;
+  width: 80px;
+  height: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
+
+/* ── Static track circles ─────────────────────── */
+.page-loader__track-outer,
+.page-loader__track-inner {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.page-loader__track-outer {
+  inset: -16px;
+  border: 1.5px solid rgba(0, 99, 181, 0.07);
+}
+.page-loader__track-inner {
+  inset: -6px;
+  border: 1.5px solid rgba(249, 189, 21, 0.10);
+}
+
+/* ── Outer arc — sapphire, clockwise ──────────── */
 .page-loader__ring::before {
   content: '';
   position: absolute;
-  inset: 0;
+  inset: -16px;
   border-radius: 50%;
-  border: 2.5px solid rgba(255, 255, 255, 0.12);
-  border-top-color: rgba(249, 189, 21, 0.85);
-  animation: loaderSpin 0.9s linear infinite;
-}
-@keyframes loaderSpin {
-  to { transform: rotate(360deg); }
+  background: conic-gradient(
+    transparent             0%,
+    transparent            48%,
+    rgba(0, 99, 181, 0.10) 64%,
+    rgba(0, 99, 181, 0.55) 82%,
+    rgba(0, 99, 181, 1)   100%
+  );
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #fff calc(100% - 2.5px));
+  mask:         radial-gradient(farthest-side, transparent calc(100% - 2.5px), #fff calc(100% - 2.5px));
+  animation: arcCW 1.35s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
+/* ── Inner arc — gold, counter-clockwise ─────── */
+.page-loader__ring::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  background: conic-gradient(
+    transparent              0%,
+    transparent             50%,
+    rgba(249, 189, 21, 0.10) 67%,
+    rgba(249, 189, 21, 0.55) 84%,
+    rgba(249, 189, 21, 1)   100%
+  );
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #fff calc(100% - 2px));
+  mask:         radial-gradient(farthest-side, transparent calc(100% - 2px), #fff calc(100% - 2px));
+  animation: arcCCW 0.88s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* ── Logo ─────────────────────────────────────── */
 .page-loader__logo {
-  width: 56px;
-  height: 56px;
+  position: relative;
+  z-index: 1;
+  width: 50px;
+  height: 50px;
   object-fit: contain;
-  filter: drop-shadow(0 2px 12px rgba(0, 0, 0, 0.4));
+  filter: drop-shadow(0 2px 8px rgba(0, 99, 181, 0.13));
+  animation: logoPulse 2.6s ease-in-out infinite;
 }
 
-/* Transition */
+@keyframes arcCW  { to { transform: rotate(360deg);  } }
+@keyframes arcCCW { to { transform: rotate(-360deg); } }
+@keyframes logoPulse {
+  0%, 100% { transform: scale(1);    opacity: 1;    }
+  50%      { transform: scale(1.07); opacity: 0.86; }
+}
+
+/* ── Enter / leave ───────────────────────────── */
 .page-loader-enter-active { transition: opacity 0.18s ease; }
-.page-loader-leave-active { transition: opacity 0.32s ease; }
+.page-loader-leave-active { transition: opacity 0.35s ease; }
 .page-loader-enter-from,
 .page-loader-leave-to    { opacity: 0; }
 </style>
