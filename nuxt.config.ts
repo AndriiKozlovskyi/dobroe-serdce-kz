@@ -45,6 +45,7 @@ export default defineNuxtConfig({
     strategy: 'prefix_except_default',
     langDir: 'locales',
     lazy: true,
+    detectBrowserLanguage: false,
     baseUrl: 'https://dobroe-serdce.kz',
   },
 

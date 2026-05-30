@@ -1,5 +1,31 @@
 <script setup lang="ts">
-const { t, locale } = useI18n()
+const { t, locale, mergeLocaleMessage } = useI18n()
+
+// ── Storyblok: load texts, fall back to local i18n if unavailable ──────────
+const sbSlug    = locale.value === 'kz' ? 'site-content-kz' : 'site-content-ru'
+const sbVersion = useRuntimeConfig().public.storyblokVersion as 'draft' | 'published'
+
+const { data: sbStory } = await useAsyncData(`sb-${sbSlug}`, () =>
+  useStoryblokApi()
+    .get(`cdn/stories/${sbSlug}`, { version: sbVersion })
+    .then(r => r.data.story)
+    .catch(() => null),   // ← null = Storyblok unreachable → use local i18n
+)
+
+if (sbStory.value?.content) {
+  // Storyblok is available: override i18n with CMS content
+  mergeLocaleMessage(locale.value, transformStoryToLocale(sbStory.value.content))
+}
+// else: Storyblok unavailable → local i18n files serve as-is (no action needed)
+
+// Live preview: re-merge whenever an editor saves in Storyblok Visual Editor
+if (import.meta.client && sbStory.value?.id) {
+  useStoryblokBridge(sbStory.value.id, (updated) => {
+    sbStory.value = updated
+    if (updated?.content) mergeLocaleMessage(locale.value, transformStoryToLocale(updated.content))
+  }, { preventClicks: false })
+}
+// ──────────────────────────────────────────────────────────────────────────
 
 const BASE_URL = 'https://dobroe-serdce.kz'
 const canonicalUrl = computed(() => locale.value === 'ru' ? `${BASE_URL}/ru` : `${BASE_URL}/`)
