@@ -38,4 +38,7 @@ jobs:
           force_orphan: true
 
       - name: Notify Plesk to pull latest deploy
-        run: curl -s -o /dev/null "${{ secrets.PLESK_WEBHOOK_URL }}"
+        run: |
+          echo "Calling Plesk webhook..."
+          curl -v "https://srv-plesk63.ps.kz:8443/modules/git/public/web-hook.php?uuid=fa6bd23a-8438-f336-e28c-0e1f0e5bde04"
+          echo "Done"
