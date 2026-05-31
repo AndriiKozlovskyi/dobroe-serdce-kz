@@ -14,7 +14,7 @@
 import ruMessages from '../i18n/locales/ru.ts'
 import kzMessages from '../i18n/locales/kz.ts'
 
-const PAT  = process.env.STORYBLOK_MANAGEMENT_TOKEN ?? 'PrR7fZKev5wAsQoiiGLJFAtt'
+const PAT  = process.env.STORYBLOK_MANAGEMENT_TOKEN ?? 'sb_pat_fsFb2QcEYZWihLU67UTaeaUL7-SzOo6_1mOUoOxpbB8'
 const BASE = 'https://mapi.storyblok.com/v1'
 
 // ─── Management API helper ─────────────────────────────────────────────────
