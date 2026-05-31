@@ -4,7 +4,9 @@ on:
   push:
     branches:
       - main
-
+  workflow_dispatch:
+  repository_dispatch:
+    types: [storyblok-publish]
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -34,3 +36,6 @@ jobs:
           publish_branch: deploy
           publish_dir: .output/public
           force_orphan: true
+
+      - name: Notify Plesk to pull latest deploy
+        run: curl -s -o /dev/null "${{ secrets.PLESK_WEBHOOK_URL }}"
