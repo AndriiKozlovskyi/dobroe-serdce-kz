@@ -1,4 +1,4 @@
-﻿/**
+/**
  * One-shot Storyblok migration script.
  *
  * Run:  npx tsx scripts/migrate-to-storyblok.ts
@@ -13,6 +13,7 @@
 
 import ruMessages from '../i18n/locales/ru.ts'
 import kzMessages from '../i18n/locales/kz.ts'
+import { transformLocaleToStory } from '../shared/storyblok-transforms.ts'
 
 const PAT  = process.env.STORYBLOK_MANAGEMENT_TOKEN ?? 'sb_pat_fsFb2QcEYZWihLU67UTaeaUL7-SzOo6_1mOUoOxpbB8'
 const BASE = 'https://mapi.storyblok.com/v1'
@@ -30,88 +31,18 @@ async function mapi(method: string, path: string, body?: unknown) {
   return json
 }
 
-// ─── Helpers ───────────────────────────────────────────────────────────────
-
-function uid(): string {
-  return Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2)
-}
-
 const sleep = (ms: number) => new Promise(r => setTimeout(r, ms))
 
-// ─── Locale → Storyblok story content ─────────────────────────────────────
+// ─── Component schema builder ──────────────────────────────────────────────
 
-export function transformLocaleToStory(messages: Record<string, any>): Record<string, any> {
-  const result: Record<string, any> = { component: 'site_content' }
-
-  function walk(obj: Record<string, any>, prefix: string) {
-    for (const [key, value] of Object.entries(obj)) {
-      const field = prefix ? `${prefix}_${key}` : key
-
-      if (typeof value === 'string') {
-        result[field] = value
-      } else if (Array.isArray(value)) {
-        if (value.length === 0) {
-          result[field] = []
-        } else if (typeof value[0] === 'string') {
-          result[field] = value.map(text => ({ component: 'text_item', text, _uid: uid() }))
-        } else if ('q' in value[0]) {
-          result[field] = value.map(i => ({ component: 'qa_item', q: i.q, a: i.a, _uid: uid() }))
-        } else if ('label' in value[0] && 'href' in value[0]) {
-          result[field] = value.map(i => ({ component: 'link_item', label: i.label, href: i.href, _uid: uid() }))
-        } else if ('subtitle' in value[0]) {
-          result[field] = value.map(i => ({ component: 'accommodation_option', title: i.title, subtitle: i.subtitle, description: i.description, _uid: uid() }))
-        } else if ('title' in value[0] && 'description' in value[0]) {
-          result[field] = value.map(i => ({ component: 'service_item', title: i.title, description: i.description, _uid: uid() }))
-        } else {
-          result[field] = value
-        }
-      } else if (value && typeof value === 'object') {
-        walk(value as Record<string, any>, field)
-      }
-    }
-  }
-
-  walk(messages, '')
-  return result
+function camelToSnake(s: string): string {
+  return s.replace(/([A-Z])/g, (c) => `_${c.toLowerCase()}`)
 }
 
-// ─── Storyblok story content → locale shape ────────────────────────────────
-// Used in the runtime plugins (also exported for them)
-
-export function transformStoryToLocale(content: Record<string, any>): Record<string, any> {
-  const result: Record<string, any> = {}
-
-  for (const [rawKey, value] of Object.entries(content)) {
-    if (rawKey === 'component' || rawKey === '_uid') continue
-
-    const parts = rawKey.split('_')
-    let obj = result
-    for (let i = 0; i < parts.length - 1; i++) {
-      obj[parts[i]] ??= {}
-      obj = obj[parts[i]]
-    }
-    const last = parts[parts.length - 1]
-
-    if (Array.isArray(value)) {
-      obj[last] = value.map((blok: any) => {
-        switch (blok.component) {
-          case 'text_item': return blok.text
-          case 'qa_item': return { q: blok.q, a: blok.a }
-          case 'link_item': return { label: blok.label, href: blok.href }
-          case 'service_item': return { title: blok.title, description: blok.description }
-          case 'accommodation_option': return { title: blok.title, subtitle: blok.subtitle, description: blok.description }
-          default: return blok
-        }
-      })
-    } else {
-      obj[last] = value
-    }
-  }
-
-  return result
+function encodeField(prefix: string, key: string): string {
+  const snakeKey = camelToSnake(key)
+  return prefix ? `${prefix}__${snakeKey}` : snakeKey
 }
-
-// ─── Component schemas ─────────────────────────────────────────────────────
 
 const NESTED_COMPONENTS = [
   {
@@ -165,11 +96,10 @@ function buildSiteContentSchema(messages: Record<string, any>): Record<string, a
 
   function walk(obj: Record<string, any>, prefix: string) {
     for (const [key, value] of Object.entries(obj)) {
-      const field = prefix ? `${prefix}_${key}` : key
+      const field = encodeField(prefix, key)
 
       if (typeof value === 'string') {
-        const isLong = value.length > 80
-        schema[field] = { type: isLong ? 'textarea' : 'text', pos: pos++ }
+        schema[field] = { type: value.length > 80 ? 'textarea' : 'text', pos: pos++ }
       } else if (Array.isArray(value)) {
         if (value.length === 0 || typeof value[0] === 'string') {
           schema[field] = { type: 'bloks', restrict_components: true, component_whitelist: ['text_item'], pos: pos++ }
@@ -197,7 +127,6 @@ function buildSiteContentSchema(messages: Record<string, any>): Record<string, a
 async function main() {
   console.log('🔑 Using PAT:', PAT.slice(0, 6) + '…')
 
-  // 1. List spaces → pick first → fetch full space detail for the preview token
   console.log('\n📦 Fetching spaces…')
   const { spaces } = await mapi('GET', '/spaces')
   if (!spaces?.length) throw new Error('No spaces found. Create a space at app.storyblok.com first.')
@@ -210,7 +139,6 @@ async function main() {
   console.log(`\n🔐 Preview token: ${previewToken}`)
   console.log('   → Copy this to .env as STORYBLOK_TOKEN and NUXT_PUBLIC_STORYBLOK_TOKEN\n')
 
-  // 2. Create nested components (200 ms between each to stay under 6 req/s)
   console.log('🧩 Creating nested components…')
   for (const comp of NESTED_COMPONENTS) {
     await sleep(200)
@@ -222,7 +150,6 @@ async function main() {
     }
   }
 
-  // 3. Create / update site_content component
   console.log('\n🗂  Creating site_content component…')
   const schema = buildSiteContentSchema(ruMessages as any)
   await sleep(200)
@@ -248,7 +175,6 @@ async function main() {
     }
   }
 
-  // 4. Create + publish stories for each locale
   const stories = [
     { slug: 'site-content-kz', name: 'Site Content (KZ)', messages: kzMessages },
     { slug: 'site-content-ru', name: 'Site Content (RU)', messages: ruMessages },
@@ -267,16 +193,14 @@ async function main() {
 
     await sleep(250)
     if (storyId) {
-      await mapi('PUT', `/spaces/${spaceId}/stories/${storyId}`, {
-        story: { name, slug, content }, publish: 1,
-      })
-      console.log(`   ~ ${slug} (updated + published)`)
-    } else {
-      const { story } = await mapi('POST', `/spaces/${spaceId}/stories`, {
-        story: { name, slug, content }, publish: 1,
-      })
-      console.log(`   ✓ ${story.slug} (created + published)`)
+      console.log(`   ~ ${slug} (already exists – skipping. Run seed-storyblok.ts to update content.)`)
+      continue
     }
+
+    const { story } = await mapi('POST', `/spaces/${spaceId}/stories`, {
+      story: { name, slug, content }, publish: 1,
+    })
+    console.log(`   ✓ ${story.slug} (created + published)`)
   }
 
   console.log('\n✅ Migration complete!')
@@ -286,4 +210,3 @@ async function main() {
 }
 
 main().catch(e => { console.error('❌', e.message) })
-

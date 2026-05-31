@@ -1,4 +1,4 @@
-import { transformStoryToLocale } from '../../scripts/migrate-to-storyblok'
+import { transformStoryToLocale } from '../../shared/storyblok-transforms'
 
 function deepMerge(target: any, source: any): any {
   const result = { ...target }
