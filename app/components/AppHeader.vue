@@ -281,7 +281,7 @@ onUnmounted(() => document.removeEventListener('click', handleOutsideClick))
 
 /* ── Logo ───────────────────────────────────── */
 .ds-logo__img-wrap { position: relative; flex-shrink: 0; }
-.ds-logo__img { height: 38px; width: auto; object-fit: contain; }
+.ds-logo__img { height: 40px; width: auto; object-fit: contain; }
 @media (min-width: 640px)  { .ds-logo__img { height: 30px; } }
 @media (min-width: 1024px) { .ds-logo__img { height: 36px; } }
 
