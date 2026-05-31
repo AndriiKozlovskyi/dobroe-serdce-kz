@@ -1,45 +1,36 @@
-name: Build & Deploy to Plesk
+name: Build and Deploy Branch
 
 on:
   push:
-    branches: [main]
-  repository_dispatch:
-    types: [storyblok_publish]
-  workflow_dispatch:
-
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    branches:
+      - main
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write
+
     steps:
-      - name: Checkout
+      - name: Checkout main
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: 22
 
       - name: Install dependencies
         run: npm ci
 
       - name: Generate static site
         run: npm run generate
-        env:
-          NITRO_PRESET: static
-          NUXT_PUBLIC_STORYBLOK_TOKEN: ${{ secrets.STORYBLOK_TOKEN }}
-          NUXT_PUBLIC_STORYBLOK_VERSION: published
 
-      - name: Deploy to Plesk via FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      - name: Deploy to deploy branch
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: .output/public/
-          server-dir: ${{ secrets.FTP_SERVER_DIR }}
-          dangerous-clean-slate: false
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: deploy
+          publish_dir: .output/public
+          force_orphan: true
