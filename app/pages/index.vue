@@ -12,6 +12,7 @@ const { data: sbStory } = await useAsyncData(`sb-${sbSlug}`, () =>
     .catch(() => null),   // ← null = Storyblok unreachable → use local i18n
 )
 
+
 if (sbStory.value?.content) {
   // Storyblok is available: override i18n with CMS content
   mergeLocaleMessage(locale.value, transformStoryToLocale(sbStory.value.content))
