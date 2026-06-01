@@ -36,7 +36,7 @@ async function main() {
   const spaceId: number = spaces[0].id
   console.log(`\n📦 Space: ${spaces[0].name} (${spaceId})\n`)
 
-  for (const { slug, name, messages } of config.stories) {
+  for (const { slug, name, path, messages } of config.stories) {
     const content = transformLocaleToStory(messages)
 
     await sleep(250)
@@ -50,7 +50,7 @@ async function main() {
 
     await sleep(250)
     await mapi('PUT', `/spaces/${spaceId}/stories/${storyId}`, {
-      story: { name, slug, content }, publish: 1,
+      story: { name, slug, content, real_path: path }, publish: 1,
     })
     console.log(`   ✓ ${slug} seeded + published`)
   }

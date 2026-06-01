@@ -5,6 +5,10 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   ssr: true,
 
+  routeRules: {
+    '/': { redirect: '/ru' },
+  },
+
   modules: [
     '@nuxt/fonts',
     '@nuxt/icon',
@@ -41,8 +45,8 @@ export default defineNuxtConfig({
       { code: 'kz', language: 'kk-KZ', name: 'Қазақша', file: 'kz.ts' },
       { code: 'ru', language: 'ru-RU', name: 'Русский', file: 'ru.ts' },
     ],
-    defaultLocale: 'kz',
-    strategy: 'prefix_except_default',
+    defaultLocale: 'ru',
+    strategy: 'prefix',
     langDir: 'locales',
     lazy: true,
     detectBrowserLanguage: false,
@@ -72,8 +76,8 @@ export default defineNuxtConfig({
       link: [
         { rel: 'icon', type: 'image/png', href: '/logo.png' },
         { rel: 'alternate', hreflang: 'ru', href: 'https://dobroe-serdce.kz/ru' },
-        { rel: 'alternate', hreflang: 'kk', href: 'https://dobroe-serdce.kz/' },
-        { rel: 'alternate', hreflang: 'x-default', href: 'https://dobroe-serdce.kz/' },
+        { rel: 'alternate', hreflang: 'kk', href: 'https://dobroe-serdce.kz/kz' },
+        { rel: 'alternate', hreflang: 'x-default', href: 'https://dobroe-serdce.kz/ru' },
       ],
     },
   },

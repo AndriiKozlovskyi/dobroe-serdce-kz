@@ -20,7 +20,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
 
   if (!token) return
 
-  const slug = locale === 'ru' ? 'site-content-ru' : 'site-content-kz'
+  const slug = locale === 'ru' ? 'ru' : 'kz'
 
   try {
     const data = await $fetch<any>('https://api.storyblok.com/v2/cdn/stories/' + slug, {

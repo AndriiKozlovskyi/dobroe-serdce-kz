@@ -2,7 +2,7 @@
 const { t, locale, mergeLocaleMessage } = useI18n()
 
 // ── Storyblok: load texts, fall back to local i18n if unavailable ──────────
-const sbSlug    = locale.value === 'kz' ? 'site-content-kz' : 'site-content-ru'
+const sbSlug    = locale.value === 'kz' ? 'kz' : 'ru'
 const sbVersion = useRuntimeConfig().public.storyblokVersion as 'draft' | 'published'
 
 const { data: sbStory } = await useAsyncData(`sb-${sbSlug}`, () =>
@@ -29,7 +29,7 @@ if (import.meta.client && sbStory.value?.id) {
 // ──────────────────────────────────────────────────────────────────────────
 
 const BASE_URL = 'https://dobroe-serdce.kz'
-const canonicalUrl = computed(() => locale.value === 'ru' ? `${BASE_URL}/ru` : `${BASE_URL}/`)
+const canonicalUrl = computed(() => locale.value === 'ru' ? `${BASE_URL}/ru` : `${BASE_URL}/kz`)
 const ogUrl = computed(() => canonicalUrl.value)
 
 useSeoMeta({

@@ -16,8 +16,8 @@ const config = {
 
   // ── Stories (one per locale) ──────────────────────────────────────────────
   stories: [
-    { slug: 'site-content-kz', name: 'Site Content (KZ)', messages: kzMessages as Record<string, any> },
-    { slug: 'site-content-ru', name: 'Site Content (RU)', messages: ruMessages as Record<string, any> },
+    { slug: 'kz', name: 'Home (KZ)', path: '/kz', messages: kzMessages as Record<string, any> },
+    { slug: 'ru', name: 'Home (RU)', path: '/ru', messages: ruMessages as Record<string, any> },
   ],
 
   // ── Images to upload from public/ to Storyblok asset library ─────────────

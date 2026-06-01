@@ -27,7 +27,7 @@ export default defineNuxtPlugin((nuxtApp) => {
 
   async function inject(locale: string) {
     if (hydrated.has(locale)) return
-    const slug = locale === 'ru' ? 'site-content-ru' : 'site-content-kz'
+    const slug = locale === 'ru' ? 'ru' : 'kz'
     try {
       const data = await $fetch<any>('https://api.storyblok.com/v2/cdn/stories/' + slug, {
         params: { token, version },

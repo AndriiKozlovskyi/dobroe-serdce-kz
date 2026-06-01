@@ -98,7 +98,7 @@ async function main() {
   }
 
   console.log('\n📝 Re-seeding stories with Storyblok CDN URLs…')
-  for (const { slug, name, messages } of config.stories) {
+  for (const { slug, name, path, messages } of config.stories) {
     const content = transformLocaleToStory(patchImages(messages, assetMap))
 
     await sleep(300)
@@ -108,7 +108,7 @@ async function main() {
 
     await sleep(300)
     await mapi('PUT', `/spaces/${spaceId}/stories/${storyId}`, {
-      story: { name, slug, content }, publish: 1,
+      story: { name, slug, content, real_path: path }, publish: 1,
     })
     console.log(`   ✓ ${slug} updated`)
   }

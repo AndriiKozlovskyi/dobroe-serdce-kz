@@ -188,7 +188,7 @@ async function main() {
   }
 
   console.log('\n📝 Creating stories…')
-  for (const { slug, name, messages } of config.stories) {
+  for (const { slug, name, path, messages } of config.stories) {
     const content = transformLocaleToStory(messages)
 
     await sleep(250)
@@ -205,7 +205,7 @@ async function main() {
     }
 
     const { story } = await mapi('POST', `/spaces/${spaceId}/stories`, {
-      story: { name, slug, content }, publish: 1,
+      story: { name, slug, content, real_path: path }, publish: 1,
     })
     console.log(`   ✓ ${story.slug} (created + published)`)
   }
