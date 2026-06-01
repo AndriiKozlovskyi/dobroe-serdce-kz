@@ -17,6 +17,20 @@ function uid(): string {
   return Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2)
 }
 
+const IMAGE_EXT = /\.(webp|jpg|jpeg|png|gif|svg)$/i
+
+const SITE_URL = 'https://dobroe-serdce.kz'
+
+type SbAsset = { id: number | null, filename: string, name: string, alt: string, fieldtype: string, title: string, focus: string, copyright: string, is_external_url: boolean }
+
+function toAsset(src: string | SbAsset): SbAsset {
+  if (typeof src === 'object' && 'filename' in src) {
+    return { ...src, fieldtype: 'asset', title: src.title || '', focus: src.focus || '', copyright: src.copyright || '', is_external_url: false }
+  }
+  const filename = src.startsWith('/') ? `${SITE_URL}${src}` : src
+  return { id: null, filename, name: '', alt: '', fieldtype: 'asset', title: '', focus: '', copyright: '', is_external_url: false }
+}
+
 export function transformLocaleToStory(messages: Record<string, any>): Record<string, any> {
   const result: Record<string, any> = { component: 'site_content' }
 
@@ -25,7 +39,7 @@ export function transformLocaleToStory(messages: Record<string, any>): Record<st
       const field = encodeField(prefix, key)
 
       if (typeof value === 'string') {
-        result[field] = value
+        result[field] = IMAGE_EXT.test(value) ? toAsset(value) : value
       } else if (Array.isArray(value)) {
         if (value.length === 0) {
           result[field] = []
@@ -34,7 +48,7 @@ export function transformLocaleToStory(messages: Record<string, any>): Record<st
         } else if ('q' in value[0]) {
           result[field] = value.map(i => ({ component: 'qa_item', q: i.q, a: i.a, _uid: uid() }))
         } else if ('src' in value[0] && 'alt' in value[0]) {
-          result[field] = value.map(i => ({ component: 'image_item', src: i.src, alt: i.alt, _uid: uid() }))
+          result[field] = value.map(i => ({ component: 'image_item', src: toAsset(i.src), alt: i.alt, _uid: uid() }))
         } else if ('label' in value[0] && 'href' in value[0]) {
           result[field] = value.map(i => ({ component: 'link_item', label: i.label, href: i.href, _uid: uid() }))
         } else if ('subtitle' in value[0]) {
@@ -45,7 +59,11 @@ export function transformLocaleToStory(messages: Record<string, any>): Record<st
           result[field] = value
         }
       } else if (value && typeof value === 'object') {
-        walk(value as Record<string, any>, field)
+        if ('filename' in value) {
+          result[field] = toAsset(value as SbAsset)  // ensure fieldtype is set
+        } else {
+          walk(value as Record<string, any>, field)
+        }
       }
     }
   }
