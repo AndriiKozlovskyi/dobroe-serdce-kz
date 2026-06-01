@@ -1,24 +1,19 @@
 /**
  * One-shot Storyblok migration script.
+ * Creates component schemas and empty stories.
  *
  * Run:  npx tsx scripts/migrate-to-storyblok.ts
  *
- * What it does:
- *   1. Lists your spaces, picks the first one (or creates one)
- *   2. Creates nested component schemas: text_item, qa_item, link_item,
- *      service_item, accommodation_option, site_content
- *   3. Creates + publishes two stories: site-content-kz and site-content-ru
- *   4. Prints the preview token to paste into .env → STORYBLOK_TOKEN
+ * Configure in:  scripts/storyblok.config.ts
  */
 
-import ruMessages from '../i18n/locales/ru.ts'
-import kzMessages from '../i18n/locales/kz.ts'
-import { transformLocaleToStory } from '../app/utils/storyblok.ts'
+import config from './storyblok.config.ts'
+import { transformLocaleToStory, setSiteUrl } from '../app/utils/storyblok.ts'
 
-const PAT  = process.env.STORYBLOK_MANAGEMENT_TOKEN ?? 'sb_pat_fsFb2QcEYZWihLU67UTaeaUL7-SzOo6_1mOUoOxpbB8'
+setSiteUrl(config.siteUrl)
+
+const PAT  = config.pat
 const BASE = 'https://mapi.storyblok.com/v1'
-
-// ─── Management API helper ─────────────────────────────────────────────────
 
 async function mapi(method: string, path: string, body?: unknown) {
   const res = await fetch(`${BASE}${path}`, {
@@ -33,16 +28,7 @@ async function mapi(method: string, path: string, body?: unknown) {
 
 const sleep = (ms: number) => new Promise(r => setTimeout(r, ms))
 
-// ─── Component schema builder ──────────────────────────────────────────────
-
-function camelToSnake(s: string): string {
-  return s.replace(/([A-Z])/g, (c) => `_${c.toLowerCase()}`)
-}
-
-function encodeField(prefix: string, key: string): string {
-  const snakeKey = camelToSnake(key)
-  return prefix ? `${prefix}__${snakeKey}` : snakeKey
-}
+// ─── Nested component definitions ─────────────────────────────────────────
 
 const NESTED_COMPONENTS = [
   {
@@ -75,7 +61,7 @@ const NESTED_COMPONENTS = [
     is_nestable: true,
     schema: {
       label: { type: 'text', pos: 0 },
-      href: { type: 'text', pos: 1 },
+      href:  { type: 'text', pos: 1 },
     },
   },
   {
@@ -83,7 +69,7 @@ const NESTED_COMPONENTS = [
     display_name: 'Service Item',
     is_nestable: true,
     schema: {
-      title: { type: 'text', pos: 0 },
+      title:       { type: 'text',     pos: 0 },
       description: { type: 'textarea', pos: 1 },
     },
   },
@@ -92,12 +78,24 @@ const NESTED_COMPONENTS = [
     display_name: 'Accommodation Option',
     is_nestable: true,
     schema: {
-      title: { type: 'text', pos: 0 },
-      subtitle: { type: 'text', pos: 1 },
+      title:       { type: 'text',     pos: 0 },
+      subtitle:    { type: 'text',     pos: 1 },
       description: { type: 'textarea', pos: 2 },
     },
   },
 ]
+
+// ─── Schema builder ────────────────────────────────────────────────────────
+
+function camelToSnake(s: string): string {
+  return s.replace(/([A-Z])/g, (c) => `_${c.toLowerCase()}`)
+}
+function encodeField(prefix: string, key: string): string {
+  const snakeKey = camelToSnake(key)
+  return prefix ? `${prefix}__${snakeKey}` : snakeKey
+}
+
+const IMAGE_EXT = /\.(webp|jpg|jpeg|png|gif|svg)$/i
 
 function buildSiteContentSchema(messages: Record<string, any>): Record<string, any> {
   const schema: Record<string, any> = {}
@@ -108,7 +106,7 @@ function buildSiteContentSchema(messages: Record<string, any>): Record<string, a
       const field = encodeField(prefix, key)
 
       if (typeof value === 'string') {
-        if (/\.(webp|jpg|jpeg|png|gif|svg)$/i.test(value)) {
+        if (IMAGE_EXT.test(value)) {
           schema[field] = { type: 'asset', filetypes: ['images'], pos: pos++ }
         } else {
           schema[field] = { type: value.length > 80 ? 'textarea' : 'text', pos: pos++ }
@@ -142,7 +140,6 @@ function buildSiteContentSchema(messages: Record<string, any>): Record<string, a
 async function main() {
   console.log('🔑 Using PAT:', PAT.slice(0, 6) + '…')
 
-  console.log('\n📦 Fetching spaces…')
   const { spaces } = await mapi('GET', '/spaces')
   if (!spaces?.length) throw new Error('No spaces found. Create a space at app.storyblok.com first.')
   const spaceId: number = spaces[0].id
@@ -150,9 +147,9 @@ async function main() {
 
   const { space } = await mapi('GET', `/spaces/${spaceId}`)
   const previewToken: string = space.first_token ?? space.api_token ?? '(not found)'
-  console.log(`   → Using space "${space.name}" (${spaceId})`)
+  console.log(`\n📦 Space: "${space.name}" (${spaceId})`)
   console.log(`\n🔐 Preview token: ${previewToken}`)
-  console.log('   → Copy this to .env as STORYBLOK_TOKEN and NUXT_PUBLIC_STORYBLOK_TOKEN\n')
+  console.log('   → Copy to .env as STORYBLOK_TOKEN and NUXT_PUBLIC_STORYBLOK_TOKEN\n')
 
   console.log('🧩 Creating nested components…')
   for (const comp of NESTED_COMPONENTS) {
@@ -166,7 +163,7 @@ async function main() {
   }
 
   console.log('\n🗂  Creating site_content component…')
-  const schema = buildSiteContentSchema(ruMessages as any)
+  const schema = buildSiteContentSchema(config.stories[0]!.messages)
   await sleep(200)
   try {
     await mapi('POST', `/spaces/${spaceId}/components`, {
@@ -190,14 +187,9 @@ async function main() {
     }
   }
 
-  const stories = [
-    { slug: 'site-content-kz', name: 'Site Content (KZ)', messages: kzMessages },
-    { slug: 'site-content-ru', name: 'Site Content (RU)', messages: ruMessages },
-  ]
-
   console.log('\n📝 Creating stories…')
-  for (const { slug, name, messages } of stories) {
-    const content = transformLocaleToStory(messages as any)
+  for (const { slug, name, messages } of config.stories) {
+    const content = transformLocaleToStory(messages)
 
     await sleep(250)
     let storyId: number | null = null
@@ -208,7 +200,7 @@ async function main() {
 
     await sleep(250)
     if (storyId) {
-      console.log(`   ~ ${slug} (already exists – skipping. Run seed-storyblok.ts to update content.)`)
+      console.log(`   ~ ${slug} (already exists – run seed-storyblok.ts to update content)`)
       continue
     }
 

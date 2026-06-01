@@ -19,7 +19,8 @@ function uid(): string {
 
 const IMAGE_EXT = /\.(webp|jpg|jpeg|png|gif|svg)$/i
 
-const SITE_URL = 'https://dobroe-serdce.kz'
+let SITE_URL = ''
+export function setSiteUrl(url: string) { SITE_URL = url }
 
 type SbAsset = { id: number | null, filename: string, name: string, alt: string, fieldtype: string, title: string, focus: string, copyright: string, is_external_url: boolean }
 

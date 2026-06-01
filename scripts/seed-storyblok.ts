@@ -1,18 +1,18 @@
 /**
- * Fills existing Storyblok stories with content from the i18n locale files.
+ * Seeds existing Storyblok stories with content from i18n locale files.
+ * Safe to re-run any time – always overwrites story content.
  *
  * Run:  npx tsx scripts/seed-storyblok.ts
  *
- * Safe to re-run any time – it only updates story content, never touches
- * component schemas or creates/deletes stories.
- * Stories must already exist (run migrate-to-storyblok.ts first).
+ * Configure in:  scripts/storyblok.config.ts
  */
 
-import ruMessages from '../i18n/locales/ru.ts'
-import kzMessages from '../i18n/locales/kz.ts'
-import { transformLocaleToStory } from '../app/utils/storyblok.ts'
+import config from './storyblok.config.ts'
+import { transformLocaleToStory, setSiteUrl } from '../app/utils/storyblok.ts'
 
-const PAT  = process.env.STORYBLOK_MANAGEMENT_TOKEN ?? 'sb_pat_fsFb2QcEYZWihLU67UTaeaUL7-SzOo6_1mOUoOxpbB8'
+setSiteUrl(config.siteUrl)
+
+const PAT  = config.pat
 const BASE = 'https://mapi.storyblok.com/v1'
 
 async function mapi(method: string, path: string, body?: unknown) {
@@ -28,11 +28,6 @@ async function mapi(method: string, path: string, body?: unknown) {
 
 const sleep = (ms: number) => new Promise(r => setTimeout(r, ms))
 
-const STORIES = [
-  { slug: 'site-content-kz', name: 'Site Content (KZ)', messages: kzMessages },
-  { slug: 'site-content-ru', name: 'Site Content (RU)', messages: ruMessages },
-]
-
 async function main() {
   console.log('🔑 Using PAT:', PAT.slice(0, 6) + '…')
 
@@ -41,8 +36,8 @@ async function main() {
   const spaceId: number = spaces[0].id
   console.log(`\n📦 Space: ${spaces[0].name} (${spaceId})\n`)
 
-  for (const { slug, name, messages } of STORIES) {
-    const content = transformLocaleToStory(messages as any)
+  for (const { slug, name, messages } of config.stories) {
+    const content = transformLocaleToStory(messages)
 
     await sleep(250)
     const res = await mapi('GET', `/spaces/${spaceId}/stories?with_slug=${slug}`)
@@ -55,8 +50,7 @@ async function main() {
 
     await sleep(250)
     await mapi('PUT', `/spaces/${spaceId}/stories/${storyId}`, {
-      story: { name, slug, content },
-      publish: 1,
+      story: { name, slug, content }, publish: 1,
     })
     console.log(`   ✓ ${slug} seeded + published`)
   }
