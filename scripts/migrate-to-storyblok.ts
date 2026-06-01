@@ -46,6 +46,15 @@ function encodeField(prefix: string, key: string): string {
 
 const NESTED_COMPONENTS = [
   {
+    name: 'image_item',
+    display_name: 'Image Item',
+    is_nestable: true,
+    schema: {
+      src: { type: 'asset', filetypes: ['images'], pos: 0 },
+      alt: { type: 'text', pos: 1 },
+    },
+  },
+  {
     name: 'text_item',
     display_name: 'Text Item',
     is_nestable: true,
@@ -99,10 +108,16 @@ function buildSiteContentSchema(messages: Record<string, any>): Record<string, a
       const field = encodeField(prefix, key)
 
       if (typeof value === 'string') {
-        schema[field] = { type: value.length > 80 ? 'textarea' : 'text', pos: pos++ }
+        if (/\.(webp|jpg|jpeg|png|gif|svg)$/i.test(value)) {
+          schema[field] = { type: 'asset', filetypes: ['images'], pos: pos++ }
+        } else {
+          schema[field] = { type: value.length > 80 ? 'textarea' : 'text', pos: pos++ }
+        }
       } else if (Array.isArray(value)) {
         if (value.length === 0 || typeof value[0] === 'string') {
           schema[field] = { type: 'bloks', restrict_components: true, component_whitelist: ['text_item'], pos: pos++ }
+        } else if ('src' in value[0] && 'alt' in value[0]) {
+          schema[field] = { type: 'bloks', restrict_components: true, component_whitelist: ['image_item'], pos: pos++ }
         } else if ('q' in value[0]) {
           schema[field] = { type: 'bloks', restrict_components: true, component_whitelist: ['qa_item'], pos: pos++ }
         } else if ('label' in value[0]) {

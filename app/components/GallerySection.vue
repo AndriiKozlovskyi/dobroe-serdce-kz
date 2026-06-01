@@ -2,27 +2,22 @@
 interface GalleryImage {
   id: number
   src: string
+  alt: string
   span?: string
 }
 
 const { t, tm, rt } = useI18n()
 
-const images: GalleryImage[] = [
-  { id: 1, src: '/gallery/img.webp', span: 'col-span-2 row-span-2' },
-  { id: 2, src: '/gallery/img1.webp' },
-  { id: 3, src: '/gallery/img2.webp' },
-  { id: 4, src: '/gallery/img3.webp', span: 'col-span-2' },
-  { id: 5, src: '/gallery/img4.webp' },
-  { id: 6, src: '/gallery/img5.webp' },
-  { id: 7, src: '/gallery/img6.webp' },
-  { id: 8, src: '/gallery/img7.webp' },
-]
+// Grid span is layout-only — not CMS content
+const SPANS: Record<number, string> = { 0: 'col-span-2 row-span-2', 3: 'col-span-2' }
 
-const imagesView = computed(() => {
-  const imageAlts = tm('gallery.imageAlts') as any[]
-  return images.map((image, index) => ({
-    ...image,
-    alt: imageAlts[index] ? rt(imageAlts[index] as any) : '',
+const imagesView = computed<GalleryImage[]>(() => {
+  const photos = tm('gallery.photos') as Array<{ src: any, alt: any }>
+  return photos.map((photo, index) => ({
+    id: index + 1,
+    src: rt(photo.src),
+    alt: rt(photo.alt),
+    span: SPANS[index],
   }))
 })
 

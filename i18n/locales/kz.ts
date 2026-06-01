@@ -51,6 +51,9 @@ export default {
     ctaServices: 'Біздің қызметтер',
     yearsLabel: 'Жыл тәжірибесі',
     badgeSubtitle: 'қамқорлық пен сүйіспеншілікпен',
+    careImage: '/about/care.webp',
+    hugsImage: '/about/hugs.webp',
+    heartImage: '/about/heart.webp',
     missions: [
       'Әр тұрғынға сапалы әрі кәсіби күтім көрсету',
       'Тұруға және демалуға жайлы орта қалыптастыру',
@@ -132,6 +135,16 @@ export default {
       'Үлкен ас үстелі бар ас үй',
       'Жарық бөлме, паркет және ақ жиһаз',
       'Мәрмәр плиткасы бар жуыну бөлмесі',
+    ],
+    photos: [
+      { src: '/gallery/img.webp',  alt: 'Бағаналы пансионаттың жасыл ауласы мен қасбеті' },
+      { src: '/gallery/img1.webp', alt: 'Ашық террасасы бар пансионат ғимараты' },
+      { src: '/gallery/img2.webp', alt: 'Хрусталь шамы бар кең жатын бөлме' },
+      { src: '/gallery/img3.webp', alt: 'Шам мен диваны бар кіреберіс холл' },
+      { src: '/gallery/img4.webp', alt: 'Камині және жайлы креслолары бар бөлме' },
+      { src: '/gallery/img5.webp', alt: 'Үлкен ас үстелі бар ас үй' },
+      { src: '/gallery/img6.webp', alt: 'Жарық бөлме, паркет және ақ жиһаз' },
+      { src: '/gallery/img7.webp', alt: 'Мәрмәр плиткасы бар жуыну бөлмесі' },
     ],
   },
 

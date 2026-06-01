@@ -20,7 +20,7 @@ const missions = computed(() => (tm('about.missions') as any[]).map((m: any) => 
         <div class="relative" data-animate>
           <div class="relative overflow-hidden rounded-3xl shadow-lift">
             <NuxtImg
-              src="/about/care.webp"
+              :src="t('about.careImage')"
               alt="Персонал пансионата ухаживает за пожилым человеком"
               class="h-[380px] w-full object-cover transition-transform duration-700 hover:scale-105 sm:h-[460px]"
               loading="lazy"
@@ -29,11 +29,11 @@ const missions = computed(() => (tm('about.missions') as any[]).map((m: any) => 
           </div>
 
           <div class="absolute -right-6 top-8 hidden overflow-hidden rounded-2xl shadow-lift lg:block" style="width: 180px; height: 200px;">
-            <NuxtImg src="/about/hugs.webp" alt="Уютная комната пансионата" class="h-full w-full object-cover" loading="lazy" />
+            <NuxtImg :src="t('about.hugsImage')" alt="Уютная комната пансионата" class="h-full w-full object-cover" loading="lazy" />
           </div>
 
           <div class="absolute -bottom-8 -right-6 hidden overflow-hidden rounded-2xl shadow-lift lg:block" style="width: 160px; height: 160px;">
-            <NuxtImg src="/about/heart.webp" alt="Прогулка на свежем воздухе" class="h-full w-full object-cover" loading="lazy" />
+            <NuxtImg :src="t('about.heartImage')" alt="Прогулка на свежем воздухе" class="h-full w-full object-cover" loading="lazy" />
           </div>
 
           <div

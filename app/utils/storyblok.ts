@@ -33,6 +33,8 @@ export function transformLocaleToStory(messages: Record<string, any>): Record<st
           result[field] = value.map(text => ({ component: 'text_item', text, _uid: uid() }))
         } else if ('q' in value[0]) {
           result[field] = value.map(i => ({ component: 'qa_item', q: i.q, a: i.a, _uid: uid() }))
+        } else if ('src' in value[0] && 'alt' in value[0]) {
+          result[field] = value.map(i => ({ component: 'image_item', src: i.src, alt: i.alt, _uid: uid() }))
         } else if ('label' in value[0] && 'href' in value[0]) {
           result[field] = value.map(i => ({ component: 'link_item', label: i.label, href: i.href, _uid: uid() }))
         } else if ('subtitle' in value[0]) {
@@ -72,12 +74,16 @@ export function transformStoryToLocale(content: Record<string, any>): Record<str
         switch (blok.component) {
           case 'text_item':            return blok.text
           case 'qa_item':              return { q: blok.q, a: blok.a }
+          case 'image_item':           return { src: blok.src?.filename ?? blok.src, alt: blok.alt }
           case 'link_item':            return { label: blok.label, href: blok.href }
           case 'service_item':         return { title: blok.title, description: blok.description }
           case 'accommodation_option': return { title: blok.title, subtitle: blok.subtitle, description: blok.description }
           default:                     return blok
         }
       })
+    } else if (value && typeof value === 'object' && 'filename' in value) {
+      // Storyblok asset field → extract CDN URL
+      obj[last] = (value as { filename: string }).filename
     } else {
       obj[last] = value
     }
