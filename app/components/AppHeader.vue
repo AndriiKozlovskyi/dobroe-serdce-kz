@@ -67,6 +67,7 @@ onUnmounted(() => document.removeEventListener('click', handleOutsideClick))
       <!-- Logo -->
       <div class="ds-logo__img-wrap" style="position: relative; display: inline-block">
         <NuxtImg src="/dobroe_serdce.webp" alt="Логотип Доброе сердце" class="ds-logo__img" />
+        <span class="ds-logo__city">Астана</span>
       </div>
 
       <!-- Desktop nav links -->
@@ -284,6 +285,21 @@ onUnmounted(() => document.removeEventListener('click', handleOutsideClick))
 .ds-logo__img { height: 40px; width: auto; object-fit: contain; }
 @media (min-width: 640px)  { .ds-logo__img { height: 30px; } }
 @media (min-width: 1024px) { .ds-logo__img { height: 36px; } }
+.ds-logo__city {
+  position: absolute;
+  top: 1px;
+  left: 38%;
+  transform: translateX(-50%);
+  font-family: var(--font-family-body, system-ui, sans-serif);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-brand-500, #F9BD15);
+  white-space: nowrap;
+  pointer-events: none;
+  line-height: 1;
+}
 
 /* ── Desktop nav links ──────────────────────── */
 .ds-nav__list {

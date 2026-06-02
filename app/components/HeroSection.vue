@@ -40,7 +40,7 @@ function scrollTo(id: string) {
     </div>
 
     <div
-      class="hero-content relative z-10 mx-auto w-full max-w-7xl px-6 py-20 lg:px-8 lg:py-28 xl:px-16"
+      class="hero-content relative z-10 mx-auto w-full max-w-7xl px-6 lg:px-8  xl:px-16"
     >
       <div class="hero-copy lg:max-w-3xl">
         <h1
@@ -250,7 +250,7 @@ function scrollTo(id: string) {
   }
 
   .hero-content {
-    padding-top: 7.5rem;
+    padding-top: 5rem;
     padding-bottom: 3.5rem;
     padding-left: 1rem;
     padding-right: 1rem;
